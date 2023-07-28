@@ -161,7 +161,7 @@ export class Source extends BaseSource<Params> {
           controller.close();
           return;
         }
-        const repo = args.sourceParams.paths.length == 0 ? "." : args.sourceParams.paths[0].trim();
+        const repo = args.sourceParams.paths.length == 0 ? await fn.getcwd(args.denops) as string : args.sourceParams.paths[0].trim();
 
         const proc_ls = new Deno.Command("git", {
             //args: ["ls-files", "--full-name", "--recurse-submodules"],
