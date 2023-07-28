@@ -161,13 +161,26 @@ export class Source extends BaseSource<Params> {
           controller.close();
           return;
         }
+        const repo = args.sourceParams.paths.length == 0 ? "." : args.sourceParams.paths[0].trim();
+
+        const proc_ls = new Deno.Command("git", {
+            //args: ["ls-files", "--full-name", "--recurse-submodules"],
+            args: ["ls-files", "--recurse-submodules"],
+            stdout: "piped",
+            stderr: "piped",
+            stdin: "null",
+            cwd: repo,
+        });
+        const { code, stdout, stderr } = await proc_ls.output();
+        const text = new TextDecoder().decode(stdout);
+        const git_files = text.trim().split('\n');
 
         const cmd = [
           "rg",
           ...args.sourceParams.args,
           "--",
           input,
-          ...args.sourceParams.paths,
+          ...git_files
         ];
 
         let items: Item<ActionData>[] = [];
@@ -175,9 +188,7 @@ export class Source extends BaseSource<Params> {
         let enqueueSize = enqueueSize1st;
         let numChunks = 0;
 
-        const cwd = args.sourceOptions.path.length !== 0
-          ? treePath2Filename(args.sourceOptions.path)
-          : await fn.getcwd(args.denops) as string;
+        const cwd = repo;
 
         const proc = new Deno.Command(
           cmd[0],
@@ -232,6 +243,8 @@ export class Source extends BaseSource<Params> {
           ) {
             console.error(mes);
           }
+
+          proc.kill();
 
           controller.close();
         }

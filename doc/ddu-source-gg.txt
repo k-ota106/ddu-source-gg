@@ -1,24 +1,26 @@
-*ddu-source-rg.txt*	ripgrep source for ddu.vim
+*ddu-source-gg.txt*	ripgrep source for ddu.vim
 
 Author: KUDO Shunsuke <kudo.shunsuke.xx@gmail.com>
+Author: k-ota106
 License: MIT license
 
-CONTENTS					*ddu-source-rg-contents*
 
-Introduction    |ddu-source-rg-introduction|
-Install         |ddu-source-rg-install|
-Commands        |ddu-source-rg-commands|
-Examples        |ddu-source-rg-examples|
-Params          |ddu-source-rg-params|
+CONTENTS					*ddu-source-gg-contents*
+
+Introduction    |ddu-source-gg-introduction|
+Install         |ddu-source-gg-install|
+Commands        |ddu-source-gg-commands|
+Examples        |ddu-source-gg-examples|
+Params          |ddu-source-gg-params|
 
 
 ==============================================================================
-INTRODUCTION					*ddu-source-rg-introduction*
+INTRODUCTION					*ddu-source-gg-introduction*
 
 This source collects "ripgrep" result.
 
 ==============================================================================
-INSTALL						*ddu-source-rg-install*
+INSTALL						*ddu-source-gg-install*
 
 Please install below plugins.
 
@@ -32,24 +34,24 @@ If you want to use Migemo, install below plugin.
 https://github.com/lambdalisue/kensaku.vim
 
 ==============================================================================
-COMMANDS					*ddu-source-rg-commands*
+COMMANDS					*ddu-source-gg-commands*
 
-						*:DduRg*
-:DduRg
+						*:DduGg*
+:DduGg
 	Search text by "ripgrep".
 
 ==============================================================================
-EXAMPLES					*ddu-source-rg-examples*
+EXAMPLES					*ddu-source-gg-examples*
 
 >
     " 'word' specify what you want search word.
-    call ddu#start(#{ sources: [#{ name: 'rg', params: #{ input: word } }] })
+    call ddu#start({'sources': [{'name': 'rg', 'params': {'input': word}}]})
 
     " Change base path.
-    call ddu#start(#{
-        \   sources: [#{
-        \     name: 'rg',
-        \     options: {'path': expand('~')},
+    call ddu#start({
+        \   'sources': [{
+        \     'name': 'rg',
+        \     'options': {'path': expand('~')},
         \   }],
         \ })
 
@@ -58,52 +60,36 @@ EXAMPLES					*ddu-source-rg-examples*
     " Note: the matchers should be empty for performance
     command! DduRgLive call <SID>ddu_rg_live()
     function! s:ddu_rg_live() abort
-      call ddu#start(#{
-            \   sources: [#{
-            \     name: 'rg',
-            \     options: #{
-            \       matchers: [],
-            \       volatile: v:true,
+      call ddu#start({
+            \   'sources': [{
+            \     'name': 'rg',
+            \     'options': {
+            \       'matchers': [],
+            \       'volatile': v:true,
             \     },
             \   }],
-            \   uiParams: #{
-            \     ff: #{
-            \       ignoreEmpty: v:false,
-            \       autoResize: v:false,
-            \     }
-            \   },
+            \   'uiParams': {'ff': {
+            \     'ignoreEmpty': v:false,
+            \     'autoResize': v:false,
+            \   }},
             \ })
     endfunction
 
     " If you want to narrow by filename, please install
     " "ddu-filter-converter_display_word".
     " https://github.com/Shougo/ddu-filter-converter_display_word
-    "call ddu#custom#patch_global(#{
-    "    \   sourceOptions: #{
-    "    \     rg: #{
-    "    \       matchers: ['converter_display_word', 'matcher_substring'],
+    "call ddu#custom#patch_global({
+    "    \   'sourceOptions': {
+    "    \     'rg': {
+    "    \       'matchers': ['converter_display_word', 'matcher_substring'],
     "    \     },
     "    \   }
     "    \ })
-
-    " Search for occurrences of a fixed pattern, then filter the results:
-    nnoremap <space>/
-      \ <Cmd>call ddu#start(#{
-      \   volatile: v:false,
-      \   sources: [#{
-      \     name: 'rg',
-      \   }],
-      \   sourceParams: #{
-      \     rg: #{
-      \       input: input('Pattern: '),
-      \     },
-      \   },
-      \ })<CR>
 <
 ==============================================================================
-PARAMS						*ddu-source-rg-params*
+PARAMS						*ddu-source-gg-params*
 
-						*ddu-source-rg-param-args*
+						*ddu-source-gg-param-args*
 args	(string[])
 	Execute rg with args.
 
@@ -112,13 +98,13 @@ args	(string[])
 	if you want to highlight the search word, should be set "--json".
 	e.g. ["--json"]
 
-					*ddu-source-rg-param-displayText*
+					*ddu-source-gg-param-displayText*
 displayText	(boolean)
 	Display matched text.
 
 	Default: true
 
-					*ddu-source-rg-param-inputType*
+					*ddu-source-gg-param-inputType*
 inputType	(string)
 	Search input pattern type.
 
@@ -128,16 +114,16 @@ inputType	(string)
 
 	Default: "regex"
 
-						*ddu-source-rg-param-input*
+						*ddu-source-gg-param-input*
 input	(string)
 	Search input string.
 	Note: If |ddu-source-option-volatile| is true, |ddu-option-input| is
 	used instead.
 
-						*ddu-source-rg-param-paths*
-paths	(string[])
-	Search paths.
-	If it is empty, |ddu-source-option-path| is used instead.
+						*ddu-source-gg-param-paths*
+paths	(string[], legnth=0,1)
+	Search directory.
+	If it is empty, `'.'` is used instead.
 
 	Default: []
 
